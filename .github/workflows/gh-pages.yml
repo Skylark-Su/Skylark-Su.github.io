@@ -28,7 +28,6 @@ jobs:
           uses: peaceiris/actions-gh-pages@v4
           with:
             PERSONAL_TOKEN: ${{ secrets.BLOGTOKENS }}
-            PUBLISH_DIR: ./BlogSource/public # 注意修改成你使用hugo创建的项目名称
             EXTERNAL_REPOSITORY: Skylark-Su/Skylark-Su.github.io # 你的Github Pages远程仓库名
             PUBLISH_BRANCH: main
             PUBLISH_DIR: ./public
