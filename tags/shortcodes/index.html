@@ -485,49 +485,48 @@
 </script>
 
 <script>
-    
-    const cssPath = "https://example.com/waifu/waifu.css"
-    const tipsJsonPath = "https://example.com/waifu/waifu-tips.json"
-    
-    const live2d_path = "https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/";
+  
+  const cssPath = "https://example.com/waifu/waifu.css"
+  const tipsJsonPath = "https://example.com/waifu/waifu-tips.json"
+  
+  const live2d_path = "https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/";
 
-    
-    function loadExternalResource(url, type) {
-        return new Promise((resolve, reject) => {
-            let tag;
-            if (type === "css") {
-                tag = document.createElement("link");
-                tag.rel = "stylesheet";
-                tag.href = url;
-            }
-            else if (type === "js") {
-                tag = document.createElement("script");
-                tag.src = url;
-            }
-            if (tag) {
-                tag.onload = () => resolve(url);
-                tag.onerror = () => reject(url);
-                document.head.appendChild(tag);
-            }
-        });
-    }
+  
+  function loadExternalResource(url, type) {
+    return new Promise((resolve, reject) => {
+      let tag;
+      if (type === "css") {
+        tag = document.createElement("link");
+        tag.rel = "stylesheet";
+        tag.href = url;
+      }
+      else if (type === "js") {
+        tag = document.createElement("script");
+        tag.src = url;
+      }
+      if (tag) {
+        tag.onload = () => resolve(url);
+        tag.onerror = () => reject(url);
+        document.head.appendChild(tag);
+      }
+    });
+  }
 
-    
-    if (screen.width >= 768) {
-        Promise.all([
-            loadExternalResource(cssPath, "css"),
-            loadExternalResource(live2d_path + "live2d.min.js", "js"),
-            loadExternalResource(live2d_path + "waifu-tips.js", "js")
-        ]).then(() => {
-            
-            initWidget({
-                waifuPath: tipsJsonPath,
-                cdnPath: "https://cdn.jsdelivr.net/gh/Skylark-Su/hugo-static-resource@0.0.6/live2d/",
-                tools: ["hitokoto", "asteroids", "switch-model", "switch-texture", "photo", "info", "quit"]
-            });
-        });
-    }
+  
+  if (screen.width >= 768) {
+    Promise.all([
+      loadExternalResource(cssPath, "css"),
+      loadExternalResource(live2d_path + "live2d.min.js", "js"),
+      loadExternalResource(live2d_path + "waifu-tips.js", "js")
+    ]).then(() => {
+      
+      initWidget({
+        waifuPath: tipsJsonPath,
+        cdnPath: "https://fastly.jsdelivr.net/gh/Skylark-Su/hugo-static-resource@latest/live2d/",
+        tools: ["hitokoto", "asteroids", "switch-model", "switch-texture", "photo", "info", "quit"]
+      });
+    });
+  }
 </script>
-
     </body>
 </html>
