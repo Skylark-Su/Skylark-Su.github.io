@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>富文本 on 演示站点</title>
+        <link>https://skylark-su.github.io/tags/%E5%AF%8C%E6%96%87%E6%9C%AC/</link>
+        <description>Recent content in 富文本 on 演示站点</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Example Person</copyright>
+        <lastBuildDate>Wed, 09 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://skylark-su.github.io/tags/%E5%AF%8C%E6%96%87%E6%9C%AC/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>富文本演示</title>
+        <link>https://skylark-su.github.io/p/%E5%AF%8C%E6%96%87%E6%9C%AC%E6%BC%94%E7%A4%BA/</link>
+        <pubDate>Wed, 09 Sep 2020 00:00:00 +0000</pubDate>
+        
+        <guid>https://skylark-su.github.io/p/%E5%AF%8C%E6%96%87%E6%9C%AC%E6%BC%94%E7%A4%BA/</guid>
+        <description>&lt;p&gt;这里是富文本内容的中文演示正文。&lt;/p&gt;
+&lt;h2 id=&#34;引用短代码&#34;&gt;引用短代码
+&lt;/h2&gt;&lt;blockquote&gt;
+    &lt;p&gt;这是一个引用短代码的中文示例。&lt;/p&gt;&lt;span class=&#34;cite&#34;&gt;&lt;span&gt;― &lt;/span&gt;&lt;span&gt;某人, &lt;/span&gt;&lt;cite&gt;某书&lt;/cite&gt;&lt;/span&gt;&lt;/blockquote&gt;
+&lt;p&gt;更多内容请根据实际需求补充。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
