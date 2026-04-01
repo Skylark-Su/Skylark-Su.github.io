@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head>
-	<meta name="generator" content="Hugo 0.147.7"><meta charset='utf-8'>
+	<meta name="generator" content="Hugo 0.159.1"><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="演示说明">
 <title>演示站点</title>
 
 <link rel='canonical' href='https://skylark-su.github.io/'>
 
-<link rel="stylesheet" href="/scss/style.min.f3c876554a9a4e991a801a5020dd220a5531921263349da2bc402f65bde991a6.css"><meta property='og:title' content="演示站点">
+<link rel="stylesheet" href="/scss/style.min.b70dde930eb8029da49a85f5871a0d5439d446b7212ce23ef41e8df3809041d5.css"><meta property='og:title' content="演示站点">
 <meta property='og:description' content="演示说明">
 <meta property='og:url' content='https://skylark-su.github.io/'>
 <meta property='og:site_name' content='演示站点'>
@@ -20,7 +20,7 @@
         (function() {
             const colorSchemeKey = 'StackColorScheme';
             if(!localStorage.getItem(colorSchemeKey)){
-                localStorage.setItem(colorSchemeKey, "auto");
+                localStorage.setItem(colorSchemeKey, "light");
             }
         })();
     </script><script>
@@ -55,7 +55,7 @@
                     
                     
                         
-                        <img src="/img/avatar_hu_f509edb42ecc0ebd.png" width="300"
+                        <img src="/img/avatar_hu_b5976aa1afdc1d2e.png" width="300"
                             height="300" class="site-logo" loading="lazy" alt="Avatar">
                     
                 
@@ -281,7 +281,7 @@
         
         
         
-        
+
         <div class="widget-archive--list">
             <div class="archives-year">
                     <a href="/archives/#2020">
@@ -289,11 +289,217 @@
                             <span class="year">2020</span>
                             <span class="count">5</span>
                         
-                    </a> 
+                    </a>
                 </div>
             
         </div>
+
+        
+        <div class="calendar-heatmap-wrapper">
+            <div id="calendar-heatmap"></div>
+        </div>
     </section>
+
+    
+    <script>
+    window.heatmapData = {
+        posts: [
+            
+            {
+                date: "2020-09-09",
+                title: "Markdown 语法示例",
+                link: "\/p\/markdown-%E8%AF%AD%E6%B3%95%E7%A4%BA%E4%BE%8B\/",
+                wordCount:  50 
+            },
+            
+            {
+                date: "2020-09-09",
+                title: "表情符号支持",
+                link: "\/p\/%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7%E6%94%AF%E6%8C%81\/",
+                wordCount:  151 
+            },
+            
+            {
+                date: "2020-09-09",
+                title: "富文本演示",
+                link: "\/p\/%E5%AF%8C%E6%96%87%E6%9C%AC%E6%BC%94%E7%A4%BA\/",
+                wordCount:  56 
+            },
+            
+            {
+                date: "2020-09-09",
+                title: "数学公式排版",
+                link: "\/p\/%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F%E6%8E%92%E7%89%88\/",
+                wordCount:  58 
+            },
+            
+            {
+                date: "2020-09-09",
+                title: "占位文本",
+                link: "\/p\/%E5%8D%A0%E4%BD%8D%E6%96%87%E6%9C%AC\/",
+                wordCount:  49 
+            }
+            
+        ]
+    };
+    </script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const chartDom = document.getElementById('calendar-heatmap');
+        if (!chartDom) return;
+
+        
+        const containerWidth = chartDom.parentElement.clientWidth - 20; 
+        const containerHeight = 140;
+
+        const myChart = echarts.init(chartDom, null, {
+            renderer: 'canvas',
+            width: containerWidth,
+            height: containerHeight
+        });
+
+        
+        const posts = window.heatmapData.posts || [];
+
+        
+        const dataMap = new Map();
+        posts.forEach(post => {
+            const existing = dataMap.get(post.date);
+            if (!existing || post.wordCount > existing.wordCount) {
+                dataMap.set(post.date, {
+                    title: post.title,
+                    link: post.link,
+                    wordCount: post.wordCount
+                });
+            }
+        });
+
+        
+        const data = [];
+        for (const [date, post] of dataMap.entries()) {
+            data.push([date, post.wordCount]);
+        }
+
+        
+        const now = new Date();
+        const startDate = new Date();
+        startDate.setMonth(now.getMonth() - 5);
+        startDate.setDate(1);
+
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        const range = [formatDate(startDate), formatDate(now)];
+
+        
+        const option = {
+            tooltip: {
+                position: 'top',
+                formatter: function(params) {
+                    const postData = dataMap.get(params.data[0]);
+                    if (postData) {
+                        return `<div style="color: #000;">${postData.title}</div>`;
+                    }
+                    return '';
+                }
+            },
+            visualMap: {
+                show: false,
+                min: 0,
+                max: 5000,
+                type: 'piecewise',
+                pieces: [
+                    { min: 0, max: 1000 },
+                    { min: 1001, max: 2500 },
+                    { min: 2501, max: 4000 },
+                    { min: 4001 }
+                ],
+                inRange: {
+                    color: ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39']
+                }
+            },
+            calendar: {
+                top: 25,
+                left: 20,
+                right: 5,
+                bottom: 5,
+                cellSize: [12, 12],
+                range: range,
+                orient: 'horizontal',
+                itemStyle: {
+                    color: '#ebedf0',
+                    borderWidth: 1.5,
+                    borderColor: '#fff',
+                    borderRadius: 2
+                },
+                yearLabel: { show: false },
+                dayLabel: {
+                    nameMap: 'EN',
+                    fontSize: 10,
+                    color: '#666',
+                    firstDay: 1,
+                    margin: 4,
+                    position: 'start'
+                },
+                monthLabel: {
+                    nameMap: 'EN',
+                    fontSize: 10,
+                    color: '#666',
+                    margin: 4,
+                    position: 'start'
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: 'rgba(0, 0, 0, 0.0)'
+                    }
+                }
+            },
+            series: {
+                type: 'heatmap',
+                coordinateSystem: 'calendar',
+                data: data,
+                itemStyle: {
+                    borderColor: '#fff',
+                    borderWidth: 1.5,
+                    borderRadius: 2
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        };
+
+        myChart.setOption(option);
+
+        
+        window.addEventListener('resize', () => {
+            const newWidth = chartDom.parentElement.clientWidth - 20;
+            myChart.resize({ width: newWidth, height: 140 });
+        });
+
+        
+        myChart.on('click', function(params) {
+            if (params.componentType === 'series') {
+                const postData = dataMap.get(params.data[0]);
+                if (postData && postData.link) {
+                    window.location.href = postData.link;
+                }
+            }
+        });
+    });
+    </script>
     
     
     
@@ -314,7 +520,7 @@
     <div class="category-label">
         
         <a href="/categories/%E6%B5%8B%E8%AF%95/" class="font_size_5"
-            style="border-left-color: ; filter:saturate(1.7);">
+            style="border-left-color: #219ebc;">
             测试<span class="category-count">5</span>
         </a>
         
@@ -402,7 +608,7 @@
             
             <div class="article-category" style="margin-bottom:0.5em;">
                 
-                <a href="/categories/%E6%B5%8B%E8%AF%95/" style="background-color:#d09daa;color:#fff;padding:6px 18px;border-radius:6px;font-size:1.1em;display:inline-block;"
+                <a href="/categories/%E6%B5%8B%E8%AF%95/" style="background-color: #219ebc; color: #fff;padding:6px 18px;border-radius:6px;font-size:1.1em;display:inline-block;"
                     >
                     测试
                 </a>
@@ -433,8 +639,8 @@
     <header class="article-header">
         <div class="article-image">
             <a href="/p/%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7%E6%94%AF%E6%8C%81/">
-                <img src="/p/%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7%E6%94%AF%E6%8C%81/the-creative-exchange-d2zvqp3fpro-unsplash_hu_4478d0ca4dd8c594.jpg"
-                        srcset="/p/%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7%E6%94%AF%E6%8C%81/the-creative-exchange-d2zvqp3fpro-unsplash_hu_4478d0ca4dd8c594.jpg 800w, /p/%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7%E6%94%AF%E6%8C%81/the-creative-exchange-d2zvqp3fpro-unsplash_hu_8df8f39ac35f88d8.jpg 1600w"
+                <img src="/p/%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7%E6%94%AF%E6%8C%81/the-creative-exchange-d2zvqp3fpro-unsplash_hu_7aa44f8bc5c5babd.jpg"
+                        srcset="/p/%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7%E6%94%AF%E6%8C%81/the-creative-exchange-d2zvqp3fpro-unsplash_hu_7aa44f8bc5c5babd.jpg 800w, /p/%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7%E6%94%AF%E6%8C%81/the-creative-exchange-d2zvqp3fpro-unsplash_hu_f2231c55c099bfa5.jpg 1600w"
                         width="800" 
                         height="566" 
                         loading="lazy"
@@ -461,7 +667,7 @@
             
             <div class="article-category" style="margin-bottom:0.5em;">
                 
-                <a href="/categories/%E6%B5%8B%E8%AF%95/" style="background-color:#d09daa;color:#fff;padding:6px 18px;border-radius:6px;font-size:1.1em;display:inline-block;"
+                <a href="/categories/%E6%B5%8B%E8%AF%95/" style="background-color: #219ebc; color: #fff;padding:6px 18px;border-radius:6px;font-size:1.1em;display:inline-block;"
                     >
                     测试
                 </a>
@@ -508,7 +714,101 @@
             
             <div class="article-category" style="margin-bottom:0.5em;">
                 
-                <a href="/categories/%E6%B5%8B%E8%AF%95/" style="background-color:#d09daa;color:#fff;padding:6px 18px;border-radius:6px;font-size:1.1em;display:inline-block;"
+                <a href="/categories/%E6%B5%8B%E8%AF%95/" style="background-color: #219ebc; color: #fff;padding:6px 18px;border-radius:6px;font-size:1.1em;display:inline-block;"
+                    >
+                    测试
+                </a>
+                
+            </div>
+            
+            <div style="display:flex;align-items:center;gap:0.5em;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published" style="color:#b0b0b0;font-size:1em;">Sep 09, 2020</time>
+            </div>
+        </footer>
+    </div>
+    
+</div>
+</header>
+</article>
+    
+    
+<article class="">
+    <header class="article-header">
+
+    <div class="article-details">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;width:100%;gap:1.5rem;">
+        <div class="article-title-wrapper" style="flex:1 1 auto;min-width:0;">
+            <h2 class="article-title">
+                <a href="/p/%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F%E6%8E%92%E7%89%88/">数学公式排版</a>
+            </h2>
+            
+            <h3 class="article-subtitle">
+                这是一个数学公式排版的中文示例文章。
+            </h3>
+            
+        </div>
+        <footer class="article-time"
+            style="display:flex;flex-direction:column;align-items:flex-end;justify-content:center;min-width:160px;">
+            
+            <div class="article-category" style="margin-bottom:0.5em;">
+                
+                <a href="/categories/%E6%B5%8B%E8%AF%95/" style="background-color: #219ebc; color: #fff;padding:6px 18px;border-radius:6px;font-size:1.1em;display:inline-block;"
+                    >
+                    测试
+                </a>
+                
+            </div>
+            
+            <div style="display:flex;align-items:center;gap:0.5em;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published" style="color:#b0b0b0;font-size:1em;">Sep 09, 2020</time>
+            </div>
+        </footer>
+    </div>
+    
+</div>
+</header>
+</article>
+    
+    
+<article class="">
+    <header class="article-header">
+
+    <div class="article-details">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;width:100%;gap:1.5rem;">
+        <div class="article-title-wrapper" style="flex:1 1 auto;min-width:0;">
+            <h2 class="article-title">
+                <a href="/p/%E5%8D%A0%E4%BD%8D%E6%96%87%E6%9C%AC/">占位文本</a>
+            </h2>
+            
+            <h3 class="article-subtitle">
+                这是一个占位文本的中文示例文章。
+            </h3>
+            
+        </div>
+        <footer class="article-time"
+            style="display:flex;flex-direction:column;align-items:flex-end;justify-content:center;min-width:160px;">
+            
+            <div class="article-category" style="margin-bottom:0.5em;">
+                
+                <a href="/categories/%E6%B5%8B%E8%AF%95/" style="background-color: #219ebc; color: #fff;padding:6px 18px;border-radius:6px;font-size:1.1em;display:inline-block;"
                     >
                     测试
                 </a>
@@ -535,28 +835,13 @@
 </article>
     
 </section>
-    <nav class='pagination'>
-        
-        
-
-        
-            
-                <span class='page-link current'>1</span>
-                
-            
-            
-                    <a class='page-link' href='/page/2/'>2</a>
-                
-            
-    </nav>
-
 <footer class="site-footer">
     <section class="copyright">
         &copy;
         
         2020 -
         
-        2025 Example Person
+        2026 Example Person
     </section>
 
     
